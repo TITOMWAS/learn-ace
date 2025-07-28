@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -21,6 +21,30 @@ export const QuizEntryForm = ({ onEntryAdded }: QuizEntryFormProps) => {
   const [questionScoresInput, setQuestionScoresInput] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+
+  // Listen for AI analysis completion
+  useEffect(() => {
+    const handleAnalysisComplete = () => {
+      const analysisData = localStorage.getItem('analysisData');
+      if (analysisData) {
+        const data = JSON.parse(analysisData);
+        setScore(data.totalScore.toString());
+        setManualWeakAreas(data.weakAreas);
+        setQuestionScoresInput(data.questionScores);
+        
+        // Clean up the analysis data
+        localStorage.removeItem('analysisData');
+        
+        toast({
+          title: "Analysis Data Loaded",
+          description: "Exam data has been auto-filled from AI analysis",
+        });
+      }
+    };
+
+    window.addEventListener('analysisComplete', handleAnalysisComplete);
+    return () => window.removeEventListener('analysisComplete', handleAnalysisComplete);
+  }, [toast]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

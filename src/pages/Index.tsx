@@ -14,12 +14,8 @@ const Index = () => {
     }
   }, [navigate]);
 
-  const handleLogin = (username: string, analysisData?: any) => {
+  const handleLogin = (username: string) => {
     console.log('User logged in:', username);
-    if (analysisData) {
-      // Store analysis data to be used in dashboard
-      localStorage.setItem('pendingAnalysisData', JSON.stringify(analysisData));
-    }
     navigate('/dashboard');
   };
 

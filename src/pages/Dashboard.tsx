@@ -4,6 +4,7 @@ import { QuizEntryForm } from '@/components/QuizEntryForm';
 import { QuizSummary } from '@/components/QuizSummary';
 import { QuizTable } from '@/components/QuizTable';
 import { BookAnimation } from '@/components/BookAnimation';
+import { ImageUploadSection } from '@/components/ImageUploadSection';
 import { getQuizEntries, getUser, logoutUser } from '@/utils/localStorage';
 import { getRandomQuote } from '@/utils/quizAnalysis';
 import { QuizEntry } from '@/types/quiz';
@@ -34,6 +35,25 @@ const Dashboard = () => {
   const handleLogout = () => {
     logoutUser();
     navigate('/');
+  };
+
+  const handleAnalysisComplete = (result: any) => {
+    // Auto-fill the quiz entry form with analysis results
+    if (result.success && result.questionScores.length > 0) {
+      const questionScoresText = result.questionScores
+        .map(q => `${q.topic}|${q.scored}/${q.total}`)
+        .join('\n');
+      
+      // Store the analysis data for the QuizEntryForm to pick up
+      localStorage.setItem('analysisData', JSON.stringify({
+        totalScore: result.overallScore || 0,
+        weakAreas: result.weakAreas.join(', '),
+        questionScores: questionScoresText
+      }));
+      
+      // Trigger a reload of the QuizEntryForm
+      window.dispatchEvent(new CustomEvent('analysisComplete'));
+    }
   };
 
   return (
@@ -80,6 +100,11 @@ const Dashboard = () => {
           <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
             Track your quiz performance, identify weak areas, and monitor your learning progress over time.
           </p>
+        </div>
+
+        {/* AI Exam Analysis */}
+        <div className="animate-fade-in">
+          <ImageUploadSection onAnalysisComplete={handleAnalysisComplete} />
         </div>
 
         {/* Quiz Entry Form */}
