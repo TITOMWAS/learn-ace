@@ -1,16 +1,16 @@
 import { SignupForm } from '@/components/SignupForm';
-import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'wouter';
 
 const Signup = () => {
-  const navigate = useNavigate();
+  const [, setLocation] = useLocation();
 
   const handleSignup = (username: string) => {
     console.log('User signed up:', username);
-    navigate('/dashboard');
+    setLocation('/dashboard');
   };
 
   const handleSwitchToLogin = () => {
-    navigate('/');
+    setLocation('/');
   };
 
   return (

@@ -1,26 +1,26 @@
 import { useEffect } from 'react';
 import { LoginForm } from '@/components/LoginForm';
 import { getUser } from '@/utils/localStorage';
-import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'wouter';
 
 const Index = () => {
-  const navigate = useNavigate();
+  const [, setLocation] = useLocation();
 
   useEffect(() => {
     // Check if user is already logged in
     const userData = getUser();
     if (userData && userData.isLoggedIn) {
-      navigate('/dashboard');
+      setLocation('/dashboard');
     }
-  }, [navigate]);
+  }, [setLocation]);
 
   const handleLogin = (username: string) => {
     console.log('User logged in:', username);
-    navigate('/dashboard');
+    setLocation('/dashboard');
   };
 
   const handleSwitchToSignup = () => {
-    navigate('/signup');
+    setLocation('/signup');
   };
 
   return (

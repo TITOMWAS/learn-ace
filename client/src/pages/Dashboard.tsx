@@ -9,13 +9,13 @@ import { getQuizEntries, getUser, logoutUser } from '@/utils/localStorage';
 import { getRandomQuote } from '@/utils/quizAnalysis';
 import { QuizEntry } from '@/types/quiz';
 import { LogOut, BookOpen, BarChart3 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'wouter';
 
 const Dashboard = () => {
   const [entries, setEntries] = useState<QuizEntry[]>([]);
   const [user, setUser] = useState<string>('');
   const [quote] = useState(() => getRandomQuote());
-  const navigate = useNavigate();
+  const [, setLocation] = useLocation();
 
   const loadEntries = () => {
     setEntries(getQuizEntries());
@@ -24,24 +24,24 @@ const Dashboard = () => {
   useEffect(() => {
     const userData = getUser();
     if (!userData || !userData.isLoggedIn) {
-      navigate('/');
+      setLocation('/');
       return;
     }
     
     setUser(userData.username);
     loadEntries();
-  }, [navigate]);
+  }, [setLocation]);
 
   const handleLogout = () => {
     logoutUser();
-    navigate('/');
+    setLocation('/');
   };
 
   const handleAnalysisComplete = (result: any) => {
     // Auto-fill the quiz entry form with analysis results
     if (result.success && result.questionScores.length > 0) {
       const questionScoresText = result.questionScores
-        .map(q => `${q.topic}|${q.scored}/${q.total}`)
+        .map((q: any) => `${q.topic}|${q.scored}/${q.total}`)
         .join('\n');
       
       // Store the analysis data for the QuizEntryForm to pick up
