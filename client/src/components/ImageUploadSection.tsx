@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Upload, FileImage, Loader2 } from 'lucide-react';
-import { GrokAIService } from '@/services/grokAI';
+import { uploadFile } from '@/lib/queryClient';
 import { useToast } from '@/components/ui/use-toast';
 
 interface ImageUploadSectionProps {
@@ -14,7 +14,6 @@ interface ImageUploadSectionProps {
 export const ImageUploadSection = ({ onAnalysisComplete }: ImageUploadSectionProps) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [apiKey, setApiKey] = useState(() => GrokAIService.getApiKey() || '');
   const { toast } = useToast();
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,26 +41,11 @@ export const ImageUploadSection = ({ onAnalysisComplete }: ImageUploadSectionPro
       return;
     }
 
-    if (!apiKey.trim()) {
-      toast({
-        title: "API Key Required",
-        description: "Please enter your Grok AI API key to analyze the image.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setIsAnalyzing(true);
     
     try {
-      // Save API key for future use
-      GrokAIService.saveApiKey(apiKey.trim());
-      
-      // Convert image to base64
-      const base64Image = await GrokAIService.convertFileToBase64(selectedFile);
-      
-      // Analyze with Grok AI
-      const result = await GrokAIService.analyzeExamPaper(base64Image);
+      // Analyze with Gemini AI through backend
+      const result = await uploadFile('/api/analyze-exam', selectedFile);
       
       if (result.success) {
         toast({
@@ -96,24 +80,11 @@ export const ImageUploadSection = ({ onAnalysisComplete }: ImageUploadSectionPro
           AI Exam Analysis
         </CardTitle>
         <CardDescription>
-          Upload your marked exam paper for automatic weak area detection
+          Upload your marked exam paper for automatic weak area detection using Gemini AI
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="apiKey">Grok AI API Key</Label>
-          <Input
-            id="apiKey"
-            type="password"
-            placeholder="Enter your Grok AI API key"
-            value={apiKey}
-            onChange={(e) => setApiKey(e.target.value)}
-            className="transition-all duration-300 focus:shadow-gentle"
-          />
-          <p className="text-xs text-muted-foreground">
-            Get your API key from <a href="https://x.ai" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">x.ai</a>
-          </p>
-        </div>
+
 
         <div className="space-y-2">
           <Label htmlFor="examImage">Upload Exam Paper (JPG/PNG)</Label>
@@ -138,6 +109,7 @@ export const ImageUploadSection = ({ onAnalysisComplete }: ImageUploadSectionPro
           onClick={handleAnalyze}
           disabled={!selectedFile || isAnalyzing}
           className="w-full bg-gradient-primary hover:bg-primary-hover transition-all duration-300 transform hover:scale-105 shadow-gentle"
+          data-testid="button-analyze-exam"
         >
           {isAnalyzing ? (
             <div className="flex items-center gap-2">
@@ -153,7 +125,7 @@ export const ImageUploadSection = ({ onAnalysisComplete }: ImageUploadSectionPro
         </Button>
 
         <p className="text-xs text-muted-foreground text-center">
-          The AI will detect question scores and identify weak areas automatically
+          Gemini AI will detect question scores and identify weak areas automatically
         </p>
       </CardContent>
     </Card>
