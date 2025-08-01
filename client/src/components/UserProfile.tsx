@@ -62,13 +62,16 @@ export const UserProfile = ({ username, className = '' }: UserProfileProps) => {
           </div>
         </DialogTrigger>
         
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md" aria-describedby="profile-dialog-description">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <User className="h-5 w-5" />
               Profile Picture
             </DialogTitle>
           </DialogHeader>
+          <div id="profile-dialog-description" className="sr-only">
+            Upload or change your profile picture
+          </div>
           
           <div className="space-y-4">
             <div className="flex justify-center">

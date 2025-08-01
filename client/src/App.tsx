@@ -6,6 +6,7 @@ import { Route, Switch } from "wouter";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Signup from "./pages/Signup";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import { queryClient } from "@/lib/queryClient";
 
@@ -18,6 +19,7 @@ const App = () => (
         <Route path="/" component={Index} />
         <Route path="/signup" component={Signup} />
         <Route path="/dashboard" component={Dashboard} />
+        <Route path="/settings" component={Settings} />
         <Route>
           <NotFound />
         </Route>

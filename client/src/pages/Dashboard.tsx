@@ -9,7 +9,7 @@ import { UserProfile } from '@/components/UserProfile';
 import { getQuizEntries, getUser, logoutUser } from '@/utils/localStorage';
 import { getRandomQuote } from '@/utils/quizAnalysis';
 import { QuizEntry } from '@/types/quiz';
-import { LogOut, BookOpen, BarChart3 } from 'lucide-react';
+import { LogOut, BookOpen, BarChart3, Settings } from 'lucide-react';
 import { useLocation } from 'wouter';
 
 const Dashboard = () => {
@@ -78,6 +78,15 @@ const Dashboard = () => {
                 <p className="text-sm text-muted-foreground italic">"{quote}"</p>
               </div>
               <UserProfile username={user} />
+              <Button
+                variant="outline"
+                onClick={() => setLocation('/settings')}
+                className="flex items-center gap-2 transition-all duration-300"
+                data-testid="button-settings"
+              >
+                <Settings className="w-4 h-4" />
+                Settings
+              </Button>
               <Button
                 variant="outline"
                 onClick={handleLogout}
