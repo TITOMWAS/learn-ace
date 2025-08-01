@@ -21,6 +21,8 @@ export const ImageUploadSection = ({ onAnalysisComplete }: ImageUploadSectionPro
     if (file) {
       if (file.type === 'image/jpeg' || file.type === 'image/png') {
         setSelectedFile(file);
+        // Auto-analyze when image is selected
+        setTimeout(() => handleAnalyze(file), 100);
       } else {
         toast({
           title: "Invalid file type",
@@ -31,8 +33,9 @@ export const ImageUploadSection = ({ onAnalysisComplete }: ImageUploadSectionPro
     }
   };
 
-  const handleAnalyze = async () => {
-    if (!selectedFile) {
+  const handleAnalyze = async (fileToAnalyze?: File) => {
+    const fileToUse = fileToAnalyze || selectedFile;
+    if (!fileToUse) {
       toast({
         title: "No file selected",
         description: "Please select an exam paper image first.",
@@ -45,7 +48,7 @@ export const ImageUploadSection = ({ onAnalysisComplete }: ImageUploadSectionPro
     
     try {
       // Analyze with Gemini AI through backend
-      const result = await uploadFile('/api/analyze-exam', selectedFile);
+      const result = await uploadFile('/api/analyze-exam', fileToUse);
       
       if (result.success) {
         toast({
@@ -125,7 +128,7 @@ export const ImageUploadSection = ({ onAnalysisComplete }: ImageUploadSectionPro
         </div>
 
         <Button
-          onClick={handleAnalyze}
+          onClick={() => handleAnalyze()}
           disabled={!selectedFile || isAnalyzing}
           className="w-full bg-gradient-primary hover:bg-primary-hover transition-all duration-300 transform hover:scale-105 shadow-gentle"
           data-testid="button-analyze-exam"

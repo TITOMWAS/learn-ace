@@ -5,6 +5,7 @@ import { QuizSummary } from '@/components/QuizSummary';
 import { QuizTable } from '@/components/QuizTable';
 import { BookAnimation } from '@/components/BookAnimation';
 import { ImageUploadSection } from '@/components/ImageUploadSection';
+import { UserProfile } from '@/components/UserProfile';
 import { getQuizEntries, getUser, logoutUser } from '@/utils/localStorage';
 import { getRandomQuote } from '@/utils/quizAnalysis';
 import { QuizEntry } from '@/types/quiz';
@@ -76,10 +77,12 @@ const Dashboard = () => {
               <div className="hidden md:block text-right">
                 <p className="text-sm text-muted-foreground italic">"{quote}"</p>
               </div>
+              <UserProfile username={user} />
               <Button
                 variant="outline"
                 onClick={handleLogout}
                 className="flex items-center gap-2 transition-all duration-300 hover:bg-destructive hover:text-destructive-foreground"
+                data-testid="button-logout"
               >
                 <LogOut className="w-4 h-4" />
                 Logout

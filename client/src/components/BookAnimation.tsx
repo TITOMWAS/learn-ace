@@ -26,7 +26,7 @@ export const BookAnimation = ({ size = 'md', className = '' }: BookAnimationProp
         alt="Learning Book"
         className={`w-full h-full object-contain transition-all duration-1000 ${
           isVisible 
-            ? 'opacity-100 animate-float' 
+            ? 'opacity-100 animate-enhanced-bounce' 
             : 'opacity-0 scale-90'
         }`}
       />
